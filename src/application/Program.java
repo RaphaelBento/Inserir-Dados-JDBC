@@ -1,6 +1,9 @@
 package application;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import db.DB;
 
@@ -10,10 +13,30 @@ public class Program {
 		// TODO Auto-generated method stub
 
 		
-		Connection conn = DB.getConnection();
+		Connection conn = null;
+		Statement st =null;
+		ResultSet rs = null;
 		
-		DB.closeConnection();
-		System.out.println(DB.getConnection());
+		try {
+			conn =DB.getConnection();
+			
+			st = conn.createStatement();
+			
+			rs = st.executeQuery("select * from coursejdbc.department");
+			
+			while(rs.next()) {
+				System.out.println(rs.getInt("Id") + " - " + rs.getString("Name"));
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+			DB.closeConnection();
+		}
 	}
+	
 
 }
